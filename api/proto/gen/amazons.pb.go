@@ -21,27 +21,27 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PingRequest struct {
+type EchoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PingRequest) Reset() {
-	*x = PingRequest{}
+func (x *EchoRequest) Reset() {
+	*x = EchoRequest{}
 	mi := &file_api_proto_gen_amazons_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PingRequest) String() string {
+func (x *EchoRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PingRequest) ProtoMessage() {}
+func (*EchoRequest) ProtoMessage() {}
 
-func (x *PingRequest) ProtoReflect() protoreflect.Message {
+func (x *EchoRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_gen_amazons_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,39 +53,39 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
-func (*PingRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use EchoRequest.ProtoReflect.Descriptor instead.
+func (*EchoRequest) Descriptor() ([]byte, []int) {
 	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *PingRequest) GetMessage() string {
+func (x *EchoRequest) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
 	return ""
 }
 
-type PingResponse struct {
+type EchoResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PingResponse) Reset() {
-	*x = PingResponse{}
+func (x *EchoResponse) Reset() {
+	*x = EchoResponse{}
 	mi := &file_api_proto_gen_amazons_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PingResponse) String() string {
+func (x *EchoResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PingResponse) ProtoMessage() {}
+func (*EchoResponse) ProtoMessage() {}
 
-func (x *PingResponse) ProtoReflect() protoreflect.Message {
+func (x *EchoResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_proto_gen_amazons_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,12 +97,12 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
-func (*PingResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use EchoResponse.ProtoReflect.Descriptor instead.
+func (*EchoResponse) Descriptor() ([]byte, []int) {
 	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *PingResponse) GetMessage() string {
+func (x *EchoResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
@@ -114,12 +114,12 @@ var File_api_proto_gen_amazons_proto protoreflect.FileDescriptor
 const file_api_proto_gen_amazons_proto_rawDesc = "" +
 	"\n" +
 	"\x1bapi/proto/gen/amazons.proto\x12\aamazons\"'\n" +
-	"\vPingRequest\x12\x18\n" +
+	"\vEchoRequest\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"(\n" +
-	"\fPingResponse\x12\x18\n" +
+	"\fEchoResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage2B\n" +
 	"\vGameService\x123\n" +
-	"\x04Ping\x12\x14.amazons.PingRequest\x1a\x15.amazons.PingResponseB@Z>github.com/marcel-zisser/amazons-game-server/api/proto/gen;genb\x06proto3"
+	"\x04Echo\x12\x14.amazons.EchoRequest\x1a\x15.amazons.EchoResponseB@Z>github.com/marcel-zisser/amazons-game-server/api/proto/gen;genb\x06proto3"
 
 var (
 	file_api_proto_gen_amazons_proto_rawDescOnce sync.Once
@@ -135,12 +135,12 @@ func file_api_proto_gen_amazons_proto_rawDescGZIP() []byte {
 
 var file_api_proto_gen_amazons_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_api_proto_gen_amazons_proto_goTypes = []any{
-	(*PingRequest)(nil),  // 0: amazons.PingRequest
-	(*PingResponse)(nil), // 1: amazons.PingResponse
+	(*EchoRequest)(nil),  // 0: amazons.EchoRequest
+	(*EchoResponse)(nil), // 1: amazons.EchoResponse
 }
 var file_api_proto_gen_amazons_proto_depIdxs = []int32{
-	0, // 0: amazons.GameService.Ping:input_type -> amazons.PingRequest
-	1, // 1: amazons.GameService.Ping:output_type -> amazons.PingResponse
+	0, // 0: amazons.GameService.Echo:input_type -> amazons.EchoRequest
+	1, // 1: amazons.GameService.Echo:output_type -> amazons.EchoResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

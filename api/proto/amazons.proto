@@ -5,13 +5,13 @@ package amazons;
 option go_package = "github.com/marcel-zisser/amazons-game-server/api/proto/gen;gen";
 
 service GameService {
-  rpc Ping(PingRequest) returns (PingResponse);
+  rpc Echo(EchoRequest) returns (EchoResponse);
 }
 
-message PingRequest {
+message EchoRequest {
   string message = 1;
 }
 
-message PingResponse {
+message EchoResponse {
   string message = 1;
 }

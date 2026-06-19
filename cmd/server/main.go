@@ -1,31 +1,17 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net"
 
-	pb "github.com/marcel-zisser/amazons-game-server/api/proto/gen"
+	"github.com/marcel-zisser/amazons-game-server/internal/server"
 	"google.golang.org/grpc"
 )
 
 const (
 	port = ":50051"
 )
-
-// Server implements the GameService
-type gameServer struct {
-	pb.UnimplementedGameServiceServer
-}
-
-// Ping implements the Ping RPC method
-func (s *gameServer) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse, error) {
-	log.Printf("Received ping with message: %s", req.Message)
-	return &pb.PingResponse{
-		Message: fmt.Sprintf("Pong: %s", req.Message),
-	}, nil
-}
 
 func main() {
 	fmt.Println("🚀 Amazons Game Server initialization started...")
@@ -41,8 +27,9 @@ func main() {
 	grpcServer := grpc.NewServer()
 	defer grpcServer.Stop()
 
-	// Register the GameService
-	pb.RegisterGameServiceServer(grpcServer, &gameServer{})
+	// Create and register the GameService
+	gameServer := server.NewGameServer()
+	gameServer.Register(grpcServer)
 
 	log.Printf("🎮 Game Server listening on %s", port)
 

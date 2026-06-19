@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"time"
 
 	pb "github.com/marcel-zisser/amazons-game-server/api/proto/gen"
 	"google.golang.org/grpc"
@@ -14,7 +13,6 @@ import (
 
 func main() {
 	addr := flag.String("addr", "localhost:50051", "the address to connect to")
-	message := flag.String("msg", "Hello from client", "the message to send")
 	flag.Parse()
 
 	// Create a connection to the server
@@ -27,15 +25,20 @@ func main() {
 	// Create a client
 	client := pb.NewGameServiceClient(conn)
 
-	// Create a context with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	var msg string
 
-	// Call the Ping RPC
-	response, err := client.Ping(ctx, &pb.PingRequest{Message: *message})
-	if err != nil {
-		log.Fatalf("Failed to call Ping: %v", err)
+	for {
+		_, error := fmt.Scanln(&msg)
+		if error != nil {
+			log.Fatal(error)
+		}
+
+		// Call the Echo RPC
+		response, err := client.Echo(context.Background(), &pb.EchoRequest{Message: msg})
+		if err != nil {
+			log.Fatalf("Failed to call Echo: %v", err)
+		}
+
+		fmt.Printf("✅ Echo response: %s\n", response.Message)
 	}
-
-	fmt.Printf("✅ Ping response: %s\n", response.Message)
 }

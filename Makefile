@@ -1,0 +1,46 @@
+.PHONY: proto build run clean help
+
+GOBIN := $(shell go env GOBIN)
+
+# Default target
+help:
+	@echo "Available targets:"
+	@echo "  make proto    - Generate Go code from proto files"
+	@echo "  make build    - Build the server binary"
+	@echo "  make run      - Run the server"
+	@echo "  make clean    - Clean generated files and build artifacts"
+	@echo "  make deps     - Download and verify dependencies"
+
+# Generate Go code from proto files
+proto:
+	@echo "Generating Go code from proto files..."
+	mkdir -p api/proto/gen
+	cp api/proto/*.proto api/proto/gen/
+	protoc --go_out=. --go_opt=paths=source_relative \
+		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
+		--plugin=protoc-gen-go="$(GOBIN)/protoc-gen-go" \
+		--plugin=protoc-gen-go-grpc="$(GOBIN)/protoc-gen-go-grpc" \
+		api/proto/gen/*.proto
+	rm api/proto/gen/*.proto
+
+# Download and verify dependencies
+deps:
+	@echo "Downloading dependencies..."
+	go mod download
+	go mod verify
+
+# Build the server binary
+build: proto deps
+	@echo "Building server..."
+	go build -o bin/amazons-server ./cmd/server
+
+# Run the server
+run: build
+	@echo "Starting server..."
+	./bin/amazons-server
+
+# Clean up generated files and build artifacts
+clean:
+	@echo "Cleaning up..."
+	rm -rf bin/
+	rm -rf api/proto/gen

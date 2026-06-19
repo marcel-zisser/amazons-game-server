@@ -5,7 +5,54 @@ package amazons;
 option go_package = "github.com/marcel-zisser/amazons-game-server/api/proto/gen;gen";
 
 service GameService {
+  rpc PlayGame (PlayGameRequest) returns (stream GameEvent);
+  rpc SubmitMove (MoveRequest) returns (MoveResponse);
   rpc Echo(EchoRequest) returns (EchoResponse);
+}
+
+message PlayGameRequest {
+  string bot_name = 1;
+}
+
+message GameEvent {
+
+  enum EventType {
+    MATCH_FOUND = 0;
+    YOUR_TURN = 1;
+    OPPONENT_MOVED = 2;
+    GAME_OVER = 3;
+  }
+
+  EventType type = 1;
+  string match_id = 2;
+  string opponent_name = 3;
+  
+  // Game State
+  GameState board_state = 4;
+  string winner_name = 5;
+  string error_message = 6;
+}
+
+message GameState {
+  // 0 = Empty, 1 = White Amazon, 2 = Black Amazon, 3 = Burned (Arrow)
+  repeated int32 grid = 1; 
+}
+
+message Position {
+  int32 row = 1;
+  int32 col = 2;
+}
+
+message MoveRequest {
+  string match_id = 1;
+  Position from_pos = 2;
+  Position to_pos = 3;
+  Position arrow_pos = 4;
+}
+
+message MoveResponse {
+  bool success = 1;
+  string error_message = 2;
 }
 
 message EchoRequest {

@@ -21,6 +21,404 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GameEvent_EventType int32
+
+const (
+	GameEvent_MATCH_FOUND    GameEvent_EventType = 0
+	GameEvent_YOUR_TURN      GameEvent_EventType = 1
+	GameEvent_OPPONENT_MOVED GameEvent_EventType = 2
+	GameEvent_GAME_OVER      GameEvent_EventType = 3
+)
+
+// Enum value maps for GameEvent_EventType.
+var (
+	GameEvent_EventType_name = map[int32]string{
+		0: "MATCH_FOUND",
+		1: "YOUR_TURN",
+		2: "OPPONENT_MOVED",
+		3: "GAME_OVER",
+	}
+	GameEvent_EventType_value = map[string]int32{
+		"MATCH_FOUND":    0,
+		"YOUR_TURN":      1,
+		"OPPONENT_MOVED": 2,
+		"GAME_OVER":      3,
+	}
+)
+
+func (x GameEvent_EventType) Enum() *GameEvent_EventType {
+	p := new(GameEvent_EventType)
+	*p = x
+	return p
+}
+
+func (x GameEvent_EventType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GameEvent_EventType) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_gen_amazons_proto_enumTypes[0].Descriptor()
+}
+
+func (GameEvent_EventType) Type() protoreflect.EnumType {
+	return &file_api_proto_gen_amazons_proto_enumTypes[0]
+}
+
+func (x GameEvent_EventType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GameEvent_EventType.Descriptor instead.
+func (GameEvent_EventType) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1, 0}
+}
+
+type PlayGameRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BotName       string                 `protobuf:"bytes,1,opt,name=bot_name,json=botName,proto3" json:"bot_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlayGameRequest) Reset() {
+	*x = PlayGameRequest{}
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlayGameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlayGameRequest) ProtoMessage() {}
+
+func (x *PlayGameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlayGameRequest.ProtoReflect.Descriptor instead.
+func (*PlayGameRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *PlayGameRequest) GetBotName() string {
+	if x != nil {
+		return x.BotName
+	}
+	return ""
+}
+
+type GameEvent struct {
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	Type         GameEvent_EventType    `protobuf:"varint,1,opt,name=type,proto3,enum=amazons.GameEvent_EventType" json:"type,omitempty"`
+	MatchId      string                 `protobuf:"bytes,2,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
+	OpponentName string                 `protobuf:"bytes,3,opt,name=opponent_name,json=opponentName,proto3" json:"opponent_name,omitempty"`
+	// Game State
+	BoardState    *GameState `protobuf:"bytes,4,opt,name=board_state,json=boardState,proto3" json:"board_state,omitempty"`
+	WinnerName    string     `protobuf:"bytes,5,opt,name=winner_name,json=winnerName,proto3" json:"winner_name,omitempty"`
+	ErrorMessage  string     `protobuf:"bytes,6,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameEvent) Reset() {
+	*x = GameEvent{}
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameEvent) ProtoMessage() {}
+
+func (x *GameEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameEvent.ProtoReflect.Descriptor instead.
+func (*GameEvent) Descriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GameEvent) GetType() GameEvent_EventType {
+	if x != nil {
+		return x.Type
+	}
+	return GameEvent_MATCH_FOUND
+}
+
+func (x *GameEvent) GetMatchId() string {
+	if x != nil {
+		return x.MatchId
+	}
+	return ""
+}
+
+func (x *GameEvent) GetOpponentName() string {
+	if x != nil {
+		return x.OpponentName
+	}
+	return ""
+}
+
+func (x *GameEvent) GetBoardState() *GameState {
+	if x != nil {
+		return x.BoardState
+	}
+	return nil
+}
+
+func (x *GameEvent) GetWinnerName() string {
+	if x != nil {
+		return x.WinnerName
+	}
+	return ""
+}
+
+func (x *GameEvent) GetErrorMessage() string {
+	if x != nil {
+		return x.ErrorMessage
+	}
+	return ""
+}
+
+type GameState struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// 0 = Empty, 1 = White Amazon, 2 = Black Amazon, 3 = Burned (Arrow)
+	Grid          []int32 `protobuf:"varint,1,rep,packed,name=grid,proto3" json:"grid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameState) Reset() {
+	*x = GameState{}
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameState) ProtoMessage() {}
+
+func (x *GameState) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameState.ProtoReflect.Descriptor instead.
+func (*GameState) Descriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GameState) GetGrid() []int32 {
+	if x != nil {
+		return x.Grid
+	}
+	return nil
+}
+
+type Position struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Row           int32                  `protobuf:"varint,1,opt,name=row,proto3" json:"row,omitempty"`
+	Col           int32                  `protobuf:"varint,2,opt,name=col,proto3" json:"col,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Position) Reset() {
+	*x = Position{}
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Position) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Position) ProtoMessage() {}
+
+func (x *Position) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Position.ProtoReflect.Descriptor instead.
+func (*Position) Descriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Position) GetRow() int32 {
+	if x != nil {
+		return x.Row
+	}
+	return 0
+}
+
+func (x *Position) GetCol() int32 {
+	if x != nil {
+		return x.Col
+	}
+	return 0
+}
+
+type MoveRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MatchId       string                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
+	FromPos       *Position              `protobuf:"bytes,2,opt,name=from_pos,json=fromPos,proto3" json:"from_pos,omitempty"`
+	ToPos         *Position              `protobuf:"bytes,3,opt,name=to_pos,json=toPos,proto3" json:"to_pos,omitempty"`
+	ArrowPos      *Position              `protobuf:"bytes,4,opt,name=arrow_pos,json=arrowPos,proto3" json:"arrow_pos,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MoveRequest) Reset() {
+	*x = MoveRequest{}
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MoveRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MoveRequest) ProtoMessage() {}
+
+func (x *MoveRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MoveRequest.ProtoReflect.Descriptor instead.
+func (*MoveRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *MoveRequest) GetMatchId() string {
+	if x != nil {
+		return x.MatchId
+	}
+	return ""
+}
+
+func (x *MoveRequest) GetFromPos() *Position {
+	if x != nil {
+		return x.FromPos
+	}
+	return nil
+}
+
+func (x *MoveRequest) GetToPos() *Position {
+	if x != nil {
+		return x.ToPos
+	}
+	return nil
+}
+
+func (x *MoveRequest) GetArrowPos() *Position {
+	if x != nil {
+		return x.ArrowPos
+	}
+	return nil
+}
+
+type MoveResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	ErrorMessage  string                 `protobuf:"bytes,2,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MoveResponse) Reset() {
+	*x = MoveResponse{}
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MoveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MoveResponse) ProtoMessage() {}
+
+func (x *MoveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MoveResponse.ProtoReflect.Descriptor instead.
+func (*MoveResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *MoveResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *MoveResponse) GetErrorMessage() string {
+	if x != nil {
+		return x.ErrorMessage
+	}
+	return ""
+}
+
 type EchoRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
@@ -30,7 +428,7 @@ type EchoRequest struct {
 
 func (x *EchoRequest) Reset() {
 	*x = EchoRequest{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[0]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +440,7 @@ func (x *EchoRequest) String() string {
 func (*EchoRequest) ProtoMessage() {}
 
 func (x *EchoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[0]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +453,7 @@ func (x *EchoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EchoRequest.ProtoReflect.Descriptor instead.
 func (*EchoRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{0}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *EchoRequest) GetMessage() string {
@@ -74,7 +472,7 @@ type EchoResponse struct {
 
 func (x *EchoResponse) Reset() {
 	*x = EchoResponse{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[1]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +484,7 @@ func (x *EchoResponse) String() string {
 func (*EchoResponse) ProtoMessage() {}
 
 func (x *EchoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[1]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +497,7 @@ func (x *EchoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EchoResponse.ProtoReflect.Descriptor instead.
 func (*EchoResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *EchoResponse) GetMessage() string {
@@ -113,12 +511,44 @@ var File_api_proto_gen_amazons_proto protoreflect.FileDescriptor
 
 const file_api_proto_gen_amazons_proto_rawDesc = "" +
 	"\n" +
-	"\x1bapi/proto/gen/amazons.proto\x12\aamazons\"'\n" +
+	"\x1bapi/proto/gen/amazons.proto\x12\aamazons\",\n" +
+	"\x0fPlayGameRequest\x12\x19\n" +
+	"\bbot_name\x18\x01 \x01(\tR\abotName\"\xc8\x02\n" +
+	"\tGameEvent\x120\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x1c.amazons.GameEvent.EventTypeR\x04type\x12\x19\n" +
+	"\bmatch_id\x18\x02 \x01(\tR\amatchId\x12#\n" +
+	"\ropponent_name\x18\x03 \x01(\tR\fopponentName\x123\n" +
+	"\vboard_state\x18\x04 \x01(\v2\x12.amazons.GameStateR\n" +
+	"boardState\x12\x1f\n" +
+	"\vwinner_name\x18\x05 \x01(\tR\n" +
+	"winnerName\x12#\n" +
+	"\rerror_message\x18\x06 \x01(\tR\ferrorMessage\"N\n" +
+	"\tEventType\x12\x0f\n" +
+	"\vMATCH_FOUND\x10\x00\x12\r\n" +
+	"\tYOUR_TURN\x10\x01\x12\x12\n" +
+	"\x0eOPPONENT_MOVED\x10\x02\x12\r\n" +
+	"\tGAME_OVER\x10\x03\"\x1f\n" +
+	"\tGameState\x12\x12\n" +
+	"\x04grid\x18\x01 \x03(\x05R\x04grid\".\n" +
+	"\bPosition\x12\x10\n" +
+	"\x03row\x18\x01 \x01(\x05R\x03row\x12\x10\n" +
+	"\x03col\x18\x02 \x01(\x05R\x03col\"\xb0\x01\n" +
+	"\vMoveRequest\x12\x19\n" +
+	"\bmatch_id\x18\x01 \x01(\tR\amatchId\x12,\n" +
+	"\bfrom_pos\x18\x02 \x01(\v2\x11.amazons.PositionR\afromPos\x12(\n" +
+	"\x06to_pos\x18\x03 \x01(\v2\x11.amazons.PositionR\x05toPos\x12.\n" +
+	"\tarrow_pos\x18\x04 \x01(\v2\x11.amazons.PositionR\barrowPos\"M\n" +
+	"\fMoveResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12#\n" +
+	"\rerror_message\x18\x02 \x01(\tR\ferrorMessage\"'\n" +
 	"\vEchoRequest\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"(\n" +
 	"\fEchoResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2B\n" +
-	"\vGameService\x123\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\xb9\x01\n" +
+	"\vGameService\x12:\n" +
+	"\bPlayGame\x12\x18.amazons.PlayGameRequest\x1a\x12.amazons.GameEvent0\x01\x129\n" +
+	"\n" +
+	"SubmitMove\x12\x14.amazons.MoveRequest\x1a\x15.amazons.MoveResponse\x123\n" +
 	"\x04Echo\x12\x14.amazons.EchoRequest\x1a\x15.amazons.EchoResponseB@Z>github.com/marcel-zisser/amazons-game-server/api/proto/gen;genb\x06proto3"
 
 var (
@@ -133,19 +563,36 @@ func file_api_proto_gen_amazons_proto_rawDescGZIP() []byte {
 	return file_api_proto_gen_amazons_proto_rawDescData
 }
 
-var file_api_proto_gen_amazons_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_proto_gen_amazons_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_api_proto_gen_amazons_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_api_proto_gen_amazons_proto_goTypes = []any{
-	(*EchoRequest)(nil),  // 0: amazons.EchoRequest
-	(*EchoResponse)(nil), // 1: amazons.EchoResponse
+	(GameEvent_EventType)(0), // 0: amazons.GameEvent.EventType
+	(*PlayGameRequest)(nil),  // 1: amazons.PlayGameRequest
+	(*GameEvent)(nil),        // 2: amazons.GameEvent
+	(*GameState)(nil),        // 3: amazons.GameState
+	(*Position)(nil),         // 4: amazons.Position
+	(*MoveRequest)(nil),      // 5: amazons.MoveRequest
+	(*MoveResponse)(nil),     // 6: amazons.MoveResponse
+	(*EchoRequest)(nil),      // 7: amazons.EchoRequest
+	(*EchoResponse)(nil),     // 8: amazons.EchoResponse
 }
 var file_api_proto_gen_amazons_proto_depIdxs = []int32{
-	0, // 0: amazons.GameService.Echo:input_type -> amazons.EchoRequest
-	1, // 1: amazons.GameService.Echo:output_type -> amazons.EchoResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: amazons.GameEvent.type:type_name -> amazons.GameEvent.EventType
+	3, // 1: amazons.GameEvent.board_state:type_name -> amazons.GameState
+	4, // 2: amazons.MoveRequest.from_pos:type_name -> amazons.Position
+	4, // 3: amazons.MoveRequest.to_pos:type_name -> amazons.Position
+	4, // 4: amazons.MoveRequest.arrow_pos:type_name -> amazons.Position
+	1, // 5: amazons.GameService.PlayGame:input_type -> amazons.PlayGameRequest
+	5, // 6: amazons.GameService.SubmitMove:input_type -> amazons.MoveRequest
+	7, // 7: amazons.GameService.Echo:input_type -> amazons.EchoRequest
+	2, // 8: amazons.GameService.PlayGame:output_type -> amazons.GameEvent
+	6, // 9: amazons.GameService.SubmitMove:output_type -> amazons.MoveResponse
+	8, // 10: amazons.GameService.Echo:output_type -> amazons.EchoResponse
+	8, // [8:11] is the sub-list for method output_type
+	5, // [5:8] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_gen_amazons_proto_init() }
@@ -158,13 +605,14 @@ func file_api_proto_gen_amazons_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_gen_amazons_proto_rawDesc), len(file_api_proto_gen_amazons_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_proto_gen_amazons_proto_goTypes,
 		DependencyIndexes: file_api_proto_gen_amazons_proto_depIdxs,
+		EnumInfos:         file_api_proto_gen_amazons_proto_enumTypes,
 		MessageInfos:      file_api_proto_gen_amazons_proto_msgTypes,
 	}.Build()
 	File_api_proto_gen_amazons_proto = out.File

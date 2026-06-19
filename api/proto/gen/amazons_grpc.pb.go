@@ -19,13 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GameService_Echo_FullMethodName = "/amazons.GameService/Echo"
+	GameService_PlayGame_FullMethodName   = "/amazons.GameService/PlayGame"
+	GameService_SubmitMove_FullMethodName = "/amazons.GameService/SubmitMove"
+	GameService_Echo_FullMethodName       = "/amazons.GameService/Echo"
 )
 
 // GameServiceClient is the client API for GameService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GameServiceClient interface {
+	PlayGame(ctx context.Context, in *PlayGameRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GameEvent], error)
+	SubmitMove(ctx context.Context, in *MoveRequest, opts ...grpc.CallOption) (*MoveResponse, error)
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 }
 
@@ -35,6 +39,35 @@ type gameServiceClient struct {
 
 func NewGameServiceClient(cc grpc.ClientConnInterface) GameServiceClient {
 	return &gameServiceClient{cc}
+}
+
+func (c *gameServiceClient) PlayGame(ctx context.Context, in *PlayGameRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GameEvent], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &GameService_ServiceDesc.Streams[0], GameService_PlayGame_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[PlayGameRequest, GameEvent]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type GameService_PlayGameClient = grpc.ServerStreamingClient[GameEvent]
+
+func (c *gameServiceClient) SubmitMove(ctx context.Context, in *MoveRequest, opts ...grpc.CallOption) (*MoveResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MoveResponse)
+	err := c.cc.Invoke(ctx, GameService_SubmitMove_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *gameServiceClient) Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error) {
@@ -51,6 +84,8 @@ func (c *gameServiceClient) Echo(ctx context.Context, in *EchoRequest, opts ...g
 // All implementations must embed UnimplementedGameServiceServer
 // for forward compatibility.
 type GameServiceServer interface {
+	PlayGame(*PlayGameRequest, grpc.ServerStreamingServer[GameEvent]) error
+	SubmitMove(context.Context, *MoveRequest) (*MoveResponse, error)
 	Echo(context.Context, *EchoRequest) (*EchoResponse, error)
 	mustEmbedUnimplementedGameServiceServer()
 }
@@ -62,6 +97,12 @@ type GameServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedGameServiceServer struct{}
 
+func (UnimplementedGameServiceServer) PlayGame(*PlayGameRequest, grpc.ServerStreamingServer[GameEvent]) error {
+	return status.Error(codes.Unimplemented, "method PlayGame not implemented")
+}
+func (UnimplementedGameServiceServer) SubmitMove(context.Context, *MoveRequest) (*MoveResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SubmitMove not implemented")
+}
 func (UnimplementedGameServiceServer) Echo(context.Context, *EchoRequest) (*EchoResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Echo not implemented")
 }
@@ -84,6 +125,35 @@ func RegisterGameServiceServer(s grpc.ServiceRegistrar, srv GameServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&GameService_ServiceDesc, srv)
+}
+
+func _GameService_PlayGame_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(PlayGameRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(GameServiceServer).PlayGame(m, &grpc.GenericServerStream[PlayGameRequest, GameEvent]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type GameService_PlayGameServer = grpc.ServerStreamingServer[GameEvent]
+
+func _GameService_SubmitMove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MoveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServiceServer).SubmitMove(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GameService_SubmitMove_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServiceServer).SubmitMove(ctx, req.(*MoveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _GameService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -112,10 +182,20 @@ var GameService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*GameServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "SubmitMove",
+			Handler:    _GameService_SubmitMove_Handler,
+		},
+		{
 			MethodName: "Echo",
 			Handler:    _GameService_Echo_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "PlayGame",
+			Handler:       _GameService_PlayGame_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "api/proto/gen/amazons.proto",
 }

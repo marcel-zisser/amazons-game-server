@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/marcel-zisser/amazons-game-server/internal/matchmaking"
 	"github.com/marcel-zisser/amazons-game-server/internal/server"
 	"google.golang.org/grpc"
 )
@@ -27,8 +28,12 @@ func main() {
 	grpcServer := grpc.NewServer()
 	defer grpcServer.Stop()
 
-	// Create and register the GameService
-	gameServer := server.NewGameServer()
+	// Create matchmaking service
+	matchmaker := matchmaking.NewMatchmakingService()
+	log.Println("✅ Matchmaking service created")
+
+	// Create and register the GameService with matchmaker
+	gameServer := server.NewGameServer(matchmaker)
 	gameServer.Register(grpcServer)
 
 	log.Printf("🎮 Game Server listening on %s", port)

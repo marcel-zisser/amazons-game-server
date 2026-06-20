@@ -3,6 +3,7 @@ package matchmaking
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"sync"
 	"time"
@@ -20,7 +21,10 @@ type MatchmakingService struct {
 // Player represents a player waiting in the queue
 type Player struct {
 	PlayerName string
-	MatchCh    chan *Match // Channel to notify player when match is found
+	MatchCh    chan *Match              // Channel to notify player when match is found
+	Color      pb.GameEvent_PlayerColor // Player color (WHITE or BLACK)
+	Stream     pb.GameService_PlayGameServer
+	StreamMu   sync.Mutex // Protect stream access
 }
 
 // Match represents an active game match
@@ -28,7 +32,6 @@ type Match struct {
 	MatchID   string
 	Player1   *Player
 	Player2   *Player
-	GameState *pb.GameState
 	CreatedAt time.Time
 }
 
@@ -58,12 +61,14 @@ func (ms *MatchmakingService) JoinQueue(ctx context.Context, playerName string) 
 		opponent := ms.queue[0]
 		ms.queue = ms.queue[1:] // Remove from queue
 
+		opponent.Color = pb.GameEvent_PLAYER_WHITE
+		player.Color = pb.GameEvent_PLAYER_BLACK
+
 		// Create match
 		match := &Match{
 			MatchID:   generateMatchID(),
 			Player1:   opponent,
 			Player2:   player,
-			GameState: initializeGameState(),
 			CreatedAt: time.Now(),
 		}
 
@@ -73,6 +78,8 @@ func (ms *MatchmakingService) JoinQueue(ctx context.Context, playerName string) 
 		// Notify both players
 		opponent.MatchCh <- match
 		matchCh <- match
+
+		log.Printf("Match found: %s vs %s (Match ID: %s)", match.Player1.PlayerName, match.Player2.PlayerName, match.MatchID)
 
 		return matchCh
 	}
@@ -118,31 +125,5 @@ func (ms *MatchmakingService) RemoveFromQueue(playerName string) {
 // Helper functions
 
 func generateMatchID() string {
-	rand.Seed(time.Now().UnixNano())
 	return fmt.Sprintf("match_%d_%d", time.Now().Unix(), rand.Intn(10000))
-}
-
-func initializeGameState() *pb.GameState {
-	// Initialize 10x10 board for Amazons
-	// 0 = Empty, 1 = White Amazon, 2 = Black Amazon, 3 = Burned (arrow)
-	board := make([]int32, 100)
-
-	// Place white amazons at corners: (3,0), (6,0), (0,3), (0,6), (9,3), (9,6), (3,9), (6,9)
-	// Row-major order: row*10 + col
-	board[0*10+3] = 1 // (0,3)
-	board[0*10+6] = 1 // (0,6)
-	board[3*10+0] = 1 // (3,0)
-	board[3*10+9] = 1 // (3,9)
-	board[6*10+0] = 1 // (6,0)
-	board[6*10+9] = 1 // (6,9)
-	board[9*10+3] = 1 // (9,3)
-	board[9*10+6] = 1 // (9,6)
-
-	// Place black amazons at opposite corners
-	board[0*10+0] = 2 // (0,0)
-	board[0*10+9] = 2 // (0,9)
-	board[9*10+0] = 2 // (9,0)
-	board[9*10+9] = 2 // (9,9)
-
-	return &pb.GameState{Grid: board}
 }

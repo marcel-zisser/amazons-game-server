@@ -1,6 +1,7 @@
 .PHONY: proto build build-server build-client run run-server run-client clean help deps
 
 GOBIN := $(shell go env GOBIN)
+PLAYER ?= TestBot
 
 # Default target
 help:
@@ -51,10 +52,10 @@ run-server: build-server
 	@echo "Starting server..."
 	./bin/amazons-server
 
-# Run the client
+# Run the client (set PLAYER variable to pass a player name)
 run-client: build-client
-	@echo "Running client..."
-	./bin/amazons-client
+	@echo "Running client with player: $(PLAYER)"
+	./bin/amazons-client -player $(PLAYER)	
 
 # Alias for run-server (backwards compatibility)
 run: run-server

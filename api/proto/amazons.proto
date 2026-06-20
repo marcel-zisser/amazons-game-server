@@ -28,14 +28,23 @@ message GameEvent {
   string opponent_name = 3;
   
   // Game State
-  GameState board_state = 4;
-  string winner_name = 5;
-  string error_message = 6;
-}
+  enum PlayerColor {
+    PLAYER_UNKNOWN = 0; // Protobuf REQUIRES the first value to be 0
+    PLAYER_WHITE = 1;
+    PLAYER_BLACK = 2;
+  }
 
-message GameState {
-  // 0 = Empty, 1 = White Amazon, 2 = Black Amazon, 3 = Burned (Arrow)
-  repeated int32 grid = 1; 
+  enum FieldState {
+    FIELD_EMPTY = 0;
+    FIELD_WHITE_AMAZON = 1;
+    FIELD_BLACK_AMAZON = 2;
+    FIELD_ARROW = 3;
+  }
+
+  repeated FieldState board_state = 4;
+  PlayerColor current_player = 5;
+  string winner_name = 6;
+  string error_message = 7;
 }
 
 message Position {

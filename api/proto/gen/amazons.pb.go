@@ -73,6 +73,108 @@ func (GameEvent_EventType) EnumDescriptor() ([]byte, []int) {
 	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1, 0}
 }
 
+// Game State
+type GameEvent_PlayerColor int32
+
+const (
+	GameEvent_PLAYER_UNKNOWN GameEvent_PlayerColor = 0 // Protobuf REQUIRES the first value to be 0
+	GameEvent_PLAYER_WHITE   GameEvent_PlayerColor = 1
+	GameEvent_PLAYER_BLACK   GameEvent_PlayerColor = 2
+)
+
+// Enum value maps for GameEvent_PlayerColor.
+var (
+	GameEvent_PlayerColor_name = map[int32]string{
+		0: "PLAYER_UNKNOWN",
+		1: "PLAYER_WHITE",
+		2: "PLAYER_BLACK",
+	}
+	GameEvent_PlayerColor_value = map[string]int32{
+		"PLAYER_UNKNOWN": 0,
+		"PLAYER_WHITE":   1,
+		"PLAYER_BLACK":   2,
+	}
+)
+
+func (x GameEvent_PlayerColor) Enum() *GameEvent_PlayerColor {
+	p := new(GameEvent_PlayerColor)
+	*p = x
+	return p
+}
+
+func (x GameEvent_PlayerColor) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GameEvent_PlayerColor) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_gen_amazons_proto_enumTypes[1].Descriptor()
+}
+
+func (GameEvent_PlayerColor) Type() protoreflect.EnumType {
+	return &file_api_proto_gen_amazons_proto_enumTypes[1]
+}
+
+func (x GameEvent_PlayerColor) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GameEvent_PlayerColor.Descriptor instead.
+func (GameEvent_PlayerColor) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1, 1}
+}
+
+type GameEvent_FieldState int32
+
+const (
+	GameEvent_FIELD_EMPTY        GameEvent_FieldState = 0
+	GameEvent_FIELD_WHITE_AMAZON GameEvent_FieldState = 1
+	GameEvent_FIELD_BLACK_AMAZON GameEvent_FieldState = 2
+	GameEvent_FIELD_ARROW        GameEvent_FieldState = 3
+)
+
+// Enum value maps for GameEvent_FieldState.
+var (
+	GameEvent_FieldState_name = map[int32]string{
+		0: "FIELD_EMPTY",
+		1: "FIELD_WHITE_AMAZON",
+		2: "FIELD_BLACK_AMAZON",
+		3: "FIELD_ARROW",
+	}
+	GameEvent_FieldState_value = map[string]int32{
+		"FIELD_EMPTY":        0,
+		"FIELD_WHITE_AMAZON": 1,
+		"FIELD_BLACK_AMAZON": 2,
+		"FIELD_ARROW":        3,
+	}
+)
+
+func (x GameEvent_FieldState) Enum() *GameEvent_FieldState {
+	p := new(GameEvent_FieldState)
+	*p = x
+	return p
+}
+
+func (x GameEvent_FieldState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GameEvent_FieldState) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_proto_gen_amazons_proto_enumTypes[2].Descriptor()
+}
+
+func (GameEvent_FieldState) Type() protoreflect.EnumType {
+	return &file_api_proto_gen_amazons_proto_enumTypes[2]
+}
+
+func (x GameEvent_FieldState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GameEvent_FieldState.Descriptor instead.
+func (GameEvent_FieldState) EnumDescriptor() ([]byte, []int) {
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{1, 2}
+}
+
 type PlayGameRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	BotName       string                 `protobuf:"bytes,1,opt,name=bot_name,json=botName,proto3" json:"bot_name,omitempty"`
@@ -118,14 +220,14 @@ func (x *PlayGameRequest) GetBotName() string {
 }
 
 type GameEvent struct {
-	state        protoimpl.MessageState `protogen:"open.v1"`
-	Type         GameEvent_EventType    `protobuf:"varint,1,opt,name=type,proto3,enum=amazons.GameEvent_EventType" json:"type,omitempty"`
-	MatchId      string                 `protobuf:"bytes,2,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
-	OpponentName string                 `protobuf:"bytes,3,opt,name=opponent_name,json=opponentName,proto3" json:"opponent_name,omitempty"`
-	// Game State
-	BoardState    *GameState `protobuf:"bytes,4,opt,name=board_state,json=boardState,proto3" json:"board_state,omitempty"`
-	WinnerName    string     `protobuf:"bytes,5,opt,name=winner_name,json=winnerName,proto3" json:"winner_name,omitempty"`
-	ErrorMessage  string     `protobuf:"bytes,6,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Type          GameEvent_EventType    `protobuf:"varint,1,opt,name=type,proto3,enum=amazons.GameEvent_EventType" json:"type,omitempty"`
+	MatchId       string                 `protobuf:"bytes,2,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
+	OpponentName  string                 `protobuf:"bytes,3,opt,name=opponent_name,json=opponentName,proto3" json:"opponent_name,omitempty"`
+	BoardState    []GameEvent_FieldState `protobuf:"varint,4,rep,packed,name=board_state,json=boardState,proto3,enum=amazons.GameEvent_FieldState" json:"board_state,omitempty"`
+	CurrentPlayer GameEvent_PlayerColor  `protobuf:"varint,5,opt,name=current_player,json=currentPlayer,proto3,enum=amazons.GameEvent_PlayerColor" json:"current_player,omitempty"`
+	WinnerName    string                 `protobuf:"bytes,6,opt,name=winner_name,json=winnerName,proto3" json:"winner_name,omitempty"`
+	ErrorMessage  string                 `protobuf:"bytes,7,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -181,11 +283,18 @@ func (x *GameEvent) GetOpponentName() string {
 	return ""
 }
 
-func (x *GameEvent) GetBoardState() *GameState {
+func (x *GameEvent) GetBoardState() []GameEvent_FieldState {
 	if x != nil {
 		return x.BoardState
 	}
 	return nil
+}
+
+func (x *GameEvent) GetCurrentPlayer() GameEvent_PlayerColor {
+	if x != nil {
+		return x.CurrentPlayer
+	}
+	return GameEvent_PLAYER_UNKNOWN
 }
 
 func (x *GameEvent) GetWinnerName() string {
@@ -202,51 +311,6 @@ func (x *GameEvent) GetErrorMessage() string {
 	return ""
 }
 
-type GameState struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// 0 = Empty, 1 = White Amazon, 2 = Black Amazon, 3 = Burned (Arrow)
-	Grid          []int32 `protobuf:"varint,1,rep,packed,name=grid,proto3" json:"grid,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GameState) Reset() {
-	*x = GameState{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GameState) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GameState) ProtoMessage() {}
-
-func (x *GameState) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GameState.ProtoReflect.Descriptor instead.
-func (*GameState) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GameState) GetGrid() []int32 {
-	if x != nil {
-		return x.Grid
-	}
-	return nil
-}
-
 type Position struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Row           int32                  `protobuf:"varint,1,opt,name=row,proto3" json:"row,omitempty"`
@@ -257,7 +321,7 @@ type Position struct {
 
 func (x *Position) Reset() {
 	*x = Position{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[3]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -269,7 +333,7 @@ func (x *Position) String() string {
 func (*Position) ProtoMessage() {}
 
 func (x *Position) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[3]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -282,7 +346,7 @@ func (x *Position) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Position.ProtoReflect.Descriptor instead.
 func (*Position) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Position) GetRow() int32 {
@@ -311,7 +375,7 @@ type MoveRequest struct {
 
 func (x *MoveRequest) Reset() {
 	*x = MoveRequest{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[4]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -323,7 +387,7 @@ func (x *MoveRequest) String() string {
 func (*MoveRequest) ProtoMessage() {}
 
 func (x *MoveRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[4]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -336,7 +400,7 @@ func (x *MoveRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MoveRequest.ProtoReflect.Descriptor instead.
 func (*MoveRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *MoveRequest) GetMatchId() string {
@@ -377,7 +441,7 @@ type MoveResponse struct {
 
 func (x *MoveResponse) Reset() {
 	*x = MoveResponse{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[5]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -389,7 +453,7 @@ func (x *MoveResponse) String() string {
 func (*MoveResponse) ProtoMessage() {}
 
 func (x *MoveResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[5]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -402,7 +466,7 @@ func (x *MoveResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MoveResponse.ProtoReflect.Descriptor instead.
 func (*MoveResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{5}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *MoveResponse) GetSuccess() bool {
@@ -428,7 +492,7 @@ type EchoRequest struct {
 
 func (x *EchoRequest) Reset() {
 	*x = EchoRequest{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[6]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -440,7 +504,7 @@ func (x *EchoRequest) String() string {
 func (*EchoRequest) ProtoMessage() {}
 
 func (x *EchoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[6]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -453,7 +517,7 @@ func (x *EchoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EchoRequest.ProtoReflect.Descriptor instead.
 func (*EchoRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{6}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *EchoRequest) GetMessage() string {
@@ -472,7 +536,7 @@ type EchoResponse struct {
 
 func (x *EchoResponse) Reset() {
 	*x = EchoResponse{}
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[7]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -484,7 +548,7 @@ func (x *EchoResponse) String() string {
 func (*EchoResponse) ProtoMessage() {}
 
 func (x *EchoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_gen_amazons_proto_msgTypes[7]
+	mi := &file_api_proto_gen_amazons_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -497,7 +561,7 @@ func (x *EchoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EchoResponse.ProtoReflect.Descriptor instead.
 func (*EchoResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{7}
+	return file_api_proto_gen_amazons_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *EchoResponse) GetMessage() string {
@@ -513,23 +577,32 @@ const file_api_proto_gen_amazons_proto_rawDesc = "" +
 	"\n" +
 	"\x1bapi/proto/gen/amazons.proto\x12\aamazons\",\n" +
 	"\x0fPlayGameRequest\x12\x19\n" +
-	"\bbot_name\x18\x01 \x01(\tR\abotName\"\xc8\x02\n" +
+	"\bbot_name\x18\x01 \x01(\tR\abotName\"\xc1\x04\n" +
 	"\tGameEvent\x120\n" +
 	"\x04type\x18\x01 \x01(\x0e2\x1c.amazons.GameEvent.EventTypeR\x04type\x12\x19\n" +
 	"\bmatch_id\x18\x02 \x01(\tR\amatchId\x12#\n" +
-	"\ropponent_name\x18\x03 \x01(\tR\fopponentName\x123\n" +
-	"\vboard_state\x18\x04 \x01(\v2\x12.amazons.GameStateR\n" +
-	"boardState\x12\x1f\n" +
-	"\vwinner_name\x18\x05 \x01(\tR\n" +
+	"\ropponent_name\x18\x03 \x01(\tR\fopponentName\x12>\n" +
+	"\vboard_state\x18\x04 \x03(\x0e2\x1d.amazons.GameEvent.FieldStateR\n" +
+	"boardState\x12E\n" +
+	"\x0ecurrent_player\x18\x05 \x01(\x0e2\x1e.amazons.GameEvent.PlayerColorR\rcurrentPlayer\x12\x1f\n" +
+	"\vwinner_name\x18\x06 \x01(\tR\n" +
 	"winnerName\x12#\n" +
-	"\rerror_message\x18\x06 \x01(\tR\ferrorMessage\"N\n" +
+	"\rerror_message\x18\a \x01(\tR\ferrorMessage\"N\n" +
 	"\tEventType\x12\x0f\n" +
 	"\vMATCH_FOUND\x10\x00\x12\r\n" +
 	"\tYOUR_TURN\x10\x01\x12\x12\n" +
 	"\x0eOPPONENT_MOVED\x10\x02\x12\r\n" +
-	"\tGAME_OVER\x10\x03\"\x1f\n" +
-	"\tGameState\x12\x12\n" +
-	"\x04grid\x18\x01 \x03(\x05R\x04grid\".\n" +
+	"\tGAME_OVER\x10\x03\"E\n" +
+	"\vPlayerColor\x12\x12\n" +
+	"\x0ePLAYER_UNKNOWN\x10\x00\x12\x10\n" +
+	"\fPLAYER_WHITE\x10\x01\x12\x10\n" +
+	"\fPLAYER_BLACK\x10\x02\"^\n" +
+	"\n" +
+	"FieldState\x12\x0f\n" +
+	"\vFIELD_EMPTY\x10\x00\x12\x16\n" +
+	"\x12FIELD_WHITE_AMAZON\x10\x01\x12\x16\n" +
+	"\x12FIELD_BLACK_AMAZON\x10\x02\x12\x0f\n" +
+	"\vFIELD_ARROW\x10\x03\".\n" +
 	"\bPosition\x12\x10\n" +
 	"\x03row\x18\x01 \x01(\x05R\x03row\x12\x10\n" +
 	"\x03col\x18\x02 \x01(\x05R\x03col\"\xb0\x01\n" +
@@ -563,36 +636,38 @@ func file_api_proto_gen_amazons_proto_rawDescGZIP() []byte {
 	return file_api_proto_gen_amazons_proto_rawDescData
 }
 
-var file_api_proto_gen_amazons_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_proto_gen_amazons_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_api_proto_gen_amazons_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_api_proto_gen_amazons_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_proto_gen_amazons_proto_goTypes = []any{
-	(GameEvent_EventType)(0), // 0: amazons.GameEvent.EventType
-	(*PlayGameRequest)(nil),  // 1: amazons.PlayGameRequest
-	(*GameEvent)(nil),        // 2: amazons.GameEvent
-	(*GameState)(nil),        // 3: amazons.GameState
-	(*Position)(nil),         // 4: amazons.Position
-	(*MoveRequest)(nil),      // 5: amazons.MoveRequest
-	(*MoveResponse)(nil),     // 6: amazons.MoveResponse
-	(*EchoRequest)(nil),      // 7: amazons.EchoRequest
-	(*EchoResponse)(nil),     // 8: amazons.EchoResponse
+	(GameEvent_EventType)(0),   // 0: amazons.GameEvent.EventType
+	(GameEvent_PlayerColor)(0), // 1: amazons.GameEvent.PlayerColor
+	(GameEvent_FieldState)(0),  // 2: amazons.GameEvent.FieldState
+	(*PlayGameRequest)(nil),    // 3: amazons.PlayGameRequest
+	(*GameEvent)(nil),          // 4: amazons.GameEvent
+	(*Position)(nil),           // 5: amazons.Position
+	(*MoveRequest)(nil),        // 6: amazons.MoveRequest
+	(*MoveResponse)(nil),       // 7: amazons.MoveResponse
+	(*EchoRequest)(nil),        // 8: amazons.EchoRequest
+	(*EchoResponse)(nil),       // 9: amazons.EchoResponse
 }
 var file_api_proto_gen_amazons_proto_depIdxs = []int32{
 	0, // 0: amazons.GameEvent.type:type_name -> amazons.GameEvent.EventType
-	3, // 1: amazons.GameEvent.board_state:type_name -> amazons.GameState
-	4, // 2: amazons.MoveRequest.from_pos:type_name -> amazons.Position
-	4, // 3: amazons.MoveRequest.to_pos:type_name -> amazons.Position
-	4, // 4: amazons.MoveRequest.arrow_pos:type_name -> amazons.Position
-	1, // 5: amazons.GameService.PlayGame:input_type -> amazons.PlayGameRequest
-	5, // 6: amazons.GameService.SubmitMove:input_type -> amazons.MoveRequest
-	7, // 7: amazons.GameService.Echo:input_type -> amazons.EchoRequest
-	2, // 8: amazons.GameService.PlayGame:output_type -> amazons.GameEvent
-	6, // 9: amazons.GameService.SubmitMove:output_type -> amazons.MoveResponse
-	8, // 10: amazons.GameService.Echo:output_type -> amazons.EchoResponse
-	8, // [8:11] is the sub-list for method output_type
-	5, // [5:8] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	2, // 1: amazons.GameEvent.board_state:type_name -> amazons.GameEvent.FieldState
+	1, // 2: amazons.GameEvent.current_player:type_name -> amazons.GameEvent.PlayerColor
+	5, // 3: amazons.MoveRequest.from_pos:type_name -> amazons.Position
+	5, // 4: amazons.MoveRequest.to_pos:type_name -> amazons.Position
+	5, // 5: amazons.MoveRequest.arrow_pos:type_name -> amazons.Position
+	3, // 6: amazons.GameService.PlayGame:input_type -> amazons.PlayGameRequest
+	6, // 7: amazons.GameService.SubmitMove:input_type -> amazons.MoveRequest
+	8, // 8: amazons.GameService.Echo:input_type -> amazons.EchoRequest
+	4, // 9: amazons.GameService.PlayGame:output_type -> amazons.GameEvent
+	7, // 10: amazons.GameService.SubmitMove:output_type -> amazons.MoveResponse
+	9, // 11: amazons.GameService.Echo:output_type -> amazons.EchoResponse
+	9, // [9:12] is the sub-list for method output_type
+	6, // [6:9] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_gen_amazons_proto_init() }
@@ -605,8 +680,8 @@ func file_api_proto_gen_amazons_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_gen_amazons_proto_rawDesc), len(file_api_proto_gen_amazons_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   8,
+			NumEnums:      3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

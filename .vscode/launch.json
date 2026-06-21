@@ -5,19 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Client",
+            "name": "Launch Client 1",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "cmd/client/main.go",
-            "args": ["PLAYER=Debug"]
+            "args": ["PLAYER=Player1"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Launch Client 2",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "cmd/client/main.go",
+            "args": ["PLAYER=Player2"],
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "Launch Server",
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "cmd/server/main.go"
+            "program": "cmd/server/main.go",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

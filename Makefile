@@ -60,6 +60,10 @@ run-client: build-client
 # Alias for run-server (backwards compatibility)
 run: run-server
 
+generate-token:
+	@echo "Generating JWT token for teams"
+	@go run ./cmd/auth/main.go
+
 # Clean up generated files and build artifacts
 clean:
 	@echo "Cleaning up..."

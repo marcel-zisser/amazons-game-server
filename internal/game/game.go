@@ -15,7 +15,7 @@ type GameEngine struct {
 	Player2       *matchmaking.Player
 	CurrentPlayer pb.GameEvent_PlayerColor // 1 for Player1, 2 for Player2
 	GameOver      bool
-	Winner        string
+	Winner        *matchmaking.Player
 }
 
 // NewGameEngine creates a new game engine
@@ -27,7 +27,7 @@ func NewGameEngine(matchID string, player1, player2 *matchmaking.Player) *GameEn
 		Player2:       player2,
 		CurrentPlayer: 1, // Player1 starts
 		GameOver:      false,
-		Winner:        "",
+		Winner:        nil,
 	}
 }
 
@@ -38,10 +38,10 @@ func (g *GameEngine) MakeMove(playerName string, fromRow, fromCol, toRow, toCol,
 	}
 
 	// Verify it's this player's turn
-	if g.CurrentPlayer == 1 && g.Player1.PlayerName != playerName {
+	if g.CurrentPlayer == 1 && g.Player1.Name != playerName {
 		return fmt.Errorf("not player 1's turn")
 	}
-	if g.CurrentPlayer == 2 && g.Player2.PlayerName != playerName {
+	if g.CurrentPlayer == 2 && g.Player2.Name != playerName {
 		return fmt.Errorf("not player 2's turn")
 	}
 
@@ -71,9 +71,9 @@ func (g *GameEngine) MakeMove(playerName string, fromRow, fromCol, toRow, toCol,
 	if !g.hasValidMoves(g.CurrentPlayer) {
 		g.GameOver = true
 		if g.CurrentPlayer == pb.GameEvent_PLAYER_WHITE {
-			g.Winner = g.Player2.PlayerName
+			g.Winner = g.Player2
 		} else {
-			g.Winner = g.Player1.PlayerName
+			g.Winner = g.Player1
 		}
 	}
 
@@ -88,9 +88,9 @@ func (g *GameEngine) GetBoardState() [][]pb.GameEvent_FieldState {
 // GetCurrentPlayer returns whose turn it is
 func (g *GameEngine) GetCurrentPlayer() string {
 	if g.CurrentPlayer == pb.GameEvent_PLAYER_WHITE {
-		return g.Player1.PlayerName
+		return g.Player1.Name
 	}
-	return g.Player2.PlayerName
+	return g.Player2.Name
 }
 
 // Helper methods

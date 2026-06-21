@@ -55,10 +55,7 @@ run-server: build-server
 # Run the client (set PLAYER variable to pass a player name)
 run-client: build-client
 	@echo "Running client with player: $(PLAYER)"
-	./bin/amazons-client -player $(PLAYER)	
-
-# Alias for run-server (backwards compatibility)
-run: run-server
+	./bin/amazons-client -player $(PLAYER)
 
 generate-token:
 	@echo "Generating JWT token for teams"

@@ -116,7 +116,7 @@ func main() {
 		case pb.GameEvent_MATCH_FOUND:
 			fmt.Printf("Match found! Match ID: %s, Opponent: %s\n", event.MatchId, event.OpponentName)
 		case pb.GameEvent_YOUR_TURN:
-			fmt.Printf("It's your turn! Current player: %v\n", color)
+			fmt.Printf("It's your turn!\n")
 			moveRequest := makeMove(gameState, color, event.MatchId)
 			response, err := client.SubmitMove(authenticatedCtx, moveRequest)
 			if err != nil {
@@ -135,6 +135,7 @@ func main() {
 			}
 		case pb.GameEvent_GAME_OVER:
 			fmt.Println("Game over!")
+			fmt.Printf("Winner: %s\n", event.WinnerName)
 		}
 	}
 }

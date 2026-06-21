@@ -10,8 +10,6 @@ import (
 	"github.com/marcel-zisser/amazons-game-server/internal/server"
 )
 
-var secret = os.Getenv("JWT_SIGNING_KEY")
-
 func main() {
 	// 1. Open the file
 	file, err := os.Open("configs/teams.txt")

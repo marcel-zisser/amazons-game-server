@@ -20,11 +20,11 @@ type MatchmakingService struct {
 
 // Player represents a player waiting in the queue
 type Player struct {
-	PlayerName string
-	MatchCh    chan *Match              // Channel to notify player when match is found
-	Color      pb.GameEvent_PlayerColor // Player color (WHITE or BLACK)
-	Stream     pb.GameService_PlayGameServer
-	StreamMu   sync.Mutex // Protect stream access
+	Name     string
+	MatchCh  chan *Match              // Channel to notify player when match is found
+	Color    pb.GameEvent_PlayerColor // Player color (WHITE or BLACK)
+	Stream   pb.GameService_PlayGameServer
+	StreamMu sync.Mutex // Protect stream access
 }
 
 // Match represents an active game match
@@ -51,8 +51,8 @@ func (ms *MatchmakingService) JoinQueue(ctx context.Context, playerName string) 
 
 	matchCh := make(chan *Match, 1)
 	player := &Player{
-		PlayerName: playerName,
-		MatchCh:    matchCh,
+		Name:    playerName,
+		MatchCh: matchCh,
 	}
 
 	// Check if there's already a player waiting
@@ -79,7 +79,7 @@ func (ms *MatchmakingService) JoinQueue(ctx context.Context, playerName string) 
 		opponent.MatchCh <- match
 		matchCh <- match
 
-		log.Printf("Match found: %s vs %s (Match ID: %s)", match.Player1.PlayerName, match.Player2.PlayerName, match.MatchID)
+		log.Printf("Match found: %s vs %s (Match ID: %s)", match.Player1.Name, match.Player2.Name, match.MatchID)
 
 		return matchCh
 	}
@@ -115,7 +115,7 @@ func (ms *MatchmakingService) RemoveFromQueue(playerName string) {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
 	for i, p := range ms.queue {
-		if p.PlayerName == playerName {
+		if p.Name == playerName {
 			ms.queue = append(ms.queue[:i], ms.queue[i+1:]...)
 			break
 		}
@@ -123,7 +123,6 @@ func (ms *MatchmakingService) RemoveFromQueue(playerName string) {
 }
 
 // Helper functions
-
 func generateMatchID() string {
 	return fmt.Sprintf("match_%d_%d", time.Now().Unix(), rand.Intn(10000))
 }

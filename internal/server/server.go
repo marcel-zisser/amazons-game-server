@@ -63,17 +63,17 @@ func (s *GameServer) PlayGame(req *pb.PlayGameRequest, stream pb.GameService_Pla
 		var opponentName string
 		var yourPlayerNumber int
 
-		if match.Player1.PlayerName == playerName {
-			opponentName = match.Player2.PlayerName
+		if match.Player1.Name == playerName {
+			opponentName = match.Player2.Name
 			yourPlayerNumber = 1
 		} else {
-			opponentName = match.Player1.PlayerName
+			opponentName = match.Player1.Name
 			yourPlayerNumber = 2
 		}
 
 		// Store the stream in the player object
 		var currentPlayer *matchmaking.Player
-		if match.Player1.PlayerName == playerName {
+		if match.Player1.Name == playerName {
 			currentPlayer = match.Player1
 		} else {
 			currentPlayer = match.Player2
@@ -128,39 +128,42 @@ func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.M
 	var player, opponent *matchmaking.Player
 
 	if gameEngine.CurrentPlayer == gameEngine.Player1.Color {
-		log.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player1.PlayerName)
+		log.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player1.Name)
 		player = gameEngine.Player1
 		opponent = gameEngine.Player2
 	} else {
-		log.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player2.PlayerName)
+		log.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player2.Name)
 		player = gameEngine.Player2
 		opponent = gameEngine.Player1
 	}
 
 	// Make the move
 	err := gameEngine.MakeMove(
-		player.PlayerName,
+		player.Name,
 		req.FromPos.Row, req.FromPos.Col,
 		req.ToPos.Row, req.ToPos.Col,
 		req.ArrowPos.Row, req.ArrowPos.Col,
 	)
 
+	success := true
+	errorMessage := ""
+
 	if err != nil {
-		return &pb.MoveResponse{
-			Success:      false,
-			ErrorMessage: err.Error(),
-		}, nil
+		success = false
+		errorMessage = err.Error()
+
+		gameEngine.GameOver = true
+		gameEngine.Winner = opponent
 	}
 
-	gameEngine.CurrentPlayer = opponent.Color
-
-	// Send YOUR_TURN event to opponent
-	if opponent.Stream != nil {
+	// Check for game over
+	if gameEngine.GameOver {
+		log.Printf("Game over for match %s. Winner: %s", req.MatchId, gameEngine.Winner.Name)
 		turnEvent := &pb.GameEvent{
-			Type:          pb.GameEvent_YOUR_TURN,
-			MatchId:       req.MatchId,
-			BoardState:    flattenBoard(gameEngine.Board),
-			CurrentPlayer: opponent.Color,
+			Type:       pb.GameEvent_GAME_OVER,
+			MatchId:    req.MatchId,
+			BoardState: flattenBoard(gameEngine.Board),
+			WinnerName: gameEngine.Winner.Name,
 		}
 
 		opponent.StreamMu.Lock()
@@ -168,15 +171,35 @@ func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.M
 			log.Printf("Error sending turn event to opponent: %v", err)
 		}
 		opponent.StreamMu.Unlock()
-	}
 
-	// Check for game over
-	if gameEngine.GameOver {
-		log.Printf("Game over for match %s. Winner: %s", req.MatchId, gameEngine.Winner)
+		player.StreamMu.Lock()
+		if err := player.Stream.Send(turnEvent); err != nil {
+			log.Printf("Error sending turn event to player: %v", err)
+		}
+		player.StreamMu.Unlock()
+	} else {
+		gameEngine.CurrentPlayer = opponent.Color
+
+		// Send YOUR_TURN event to opponent
+		if opponent.Stream != nil {
+			turnEvent := &pb.GameEvent{
+				Type:          pb.GameEvent_YOUR_TURN,
+				MatchId:       req.MatchId,
+				BoardState:    flattenBoard(gameEngine.Board),
+				CurrentPlayer: gameEngine.CurrentPlayer,
+			}
+
+			opponent.StreamMu.Lock()
+			if err := opponent.Stream.Send(turnEvent); err != nil {
+				log.Printf("Error sending turn event to opponent: %v", err)
+			}
+			opponent.StreamMu.Unlock()
+		}
 	}
 
 	return &pb.MoveResponse{
-		Success: true,
+		Success:      success,
+		ErrorMessage: errorMessage,
 	}, nil
 }
 

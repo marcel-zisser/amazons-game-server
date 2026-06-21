@@ -41,7 +41,10 @@ func (s *GameServer) PlayGame(req *pb.PlayGameRequest, stream pb.GameService_Pla
 	log.Printf("Player %s joined matchmaking", playerName)
 
 	// Join the matchmaking queue
-	matchCh := s.matchmaker.JoinQueue(ctx, playerName)
+	matchCh, err := s.matchmaker.JoinQueue(ctx, playerName)
+	if err != nil {
+		return fmt.Errorf("failed to join matchmaking queue: %w", err)
+	}
 
 	// Wait for a match to be found
 	select {
@@ -81,7 +84,6 @@ func (s *GameServer) PlayGame(req *pb.PlayGameRequest, stream pb.GameService_Pla
 		currentPlayer.Stream = stream
 
 		// Send MATCH_FOUND event
-
 		matchFoundEvent := &pb.GameEvent{
 			Type:         pb.GameEvent_MATCH_FOUND,
 			MatchId:      match.MatchID,
@@ -90,7 +92,7 @@ func (s *GameServer) PlayGame(req *pb.PlayGameRequest, stream pb.GameService_Pla
 		}
 
 		if err := stream.Send(matchFoundEvent); err != nil {
-			log.Printf("Error sending match found event: %v", err)
+			match.Logger.Printf("Error sending match found event: %v", err)
 			return err
 		}
 
@@ -103,7 +105,7 @@ func (s *GameServer) PlayGame(req *pb.PlayGameRequest, stream pb.GameService_Pla
 				CurrentPlayer: pb.GameEvent_PLAYER_WHITE,
 			}
 			if err := stream.Send(turnEvent); err != nil {
-				log.Printf("Error sending initial turn event: %v", err)
+				match.Logger.Printf("Error sending initial turn event: %v", err)
 				return err
 			}
 		}
@@ -117,6 +119,8 @@ func (s *GameServer) PlayGame(req *pb.PlayGameRequest, stream pb.GameService_Pla
 
 // SubmitMove implements the SubmitMove RPC - processes player moves
 func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.MoveResponse, error) {
+	logger := s.matchmaker.GetMatch(req.MatchId).Logger
+
 	s.gamesMu.Lock()
 	gameEngine, exists := s.games[req.MatchId]
 	s.gamesMu.Unlock()
@@ -128,11 +132,11 @@ func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.M
 	var player, opponent *matchmaking.Player
 
 	if gameEngine.CurrentPlayer == gameEngine.Player1.Color {
-		log.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player1.Name)
+		logger.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player1.Name)
 		player = gameEngine.Player1
 		opponent = gameEngine.Player2
 	} else {
-		log.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player2.Name)
+		logger.Printf("Move received for match %s by %s", req.MatchId, gameEngine.Player2.Name)
 		player = gameEngine.Player2
 		opponent = gameEngine.Player1
 	}
@@ -158,7 +162,7 @@ func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.M
 
 	// Check for game over
 	if gameEngine.GameOver {
-		log.Printf("Game over for match %s. Winner: %s", req.MatchId, gameEngine.Winner.Name)
+		logger.Printf("Game over for match %s. Winner: %s", req.MatchId, gameEngine.Winner.Name)
 		turnEvent := &pb.GameEvent{
 			Type:       pb.GameEvent_GAME_OVER,
 			MatchId:    req.MatchId,
@@ -168,15 +172,17 @@ func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.M
 
 		opponent.StreamMu.Lock()
 		if err := opponent.Stream.Send(turnEvent); err != nil {
-			log.Printf("Error sending turn event to opponent: %v", err)
+			logger.Printf("Error sending turn event to opponent: %v", err)
 		}
 		opponent.StreamMu.Unlock()
 
 		player.StreamMu.Lock()
 		if err := player.Stream.Send(turnEvent); err != nil {
-			log.Printf("Error sending turn event to player: %v", err)
+			logger.Printf("Error sending turn event to player: %v", err)
 		}
 		player.StreamMu.Unlock()
+
+		s.matchmaker.GetMatch(req.MatchId).CloseLogFile()
 	} else {
 		gameEngine.CurrentPlayer = opponent.Color
 
@@ -191,7 +197,7 @@ func (s *GameServer) SubmitMove(ctx context.Context, req *pb.MoveRequest) (*pb.M
 
 			opponent.StreamMu.Lock()
 			if err := opponent.Stream.Send(turnEvent); err != nil {
-				log.Printf("Error sending turn event to opponent: %v", err)
+				logger.Printf("Error sending turn event to opponent: %v", err)
 			}
 			opponent.StreamMu.Unlock()
 		}
